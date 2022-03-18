@@ -155,13 +155,13 @@ Register two (2) distinct user accounts on the web application, one to serve as 
 
 Simply adding the token to a Django template does not activate CSRF mitigation for a request for site-wide, middleware implementation. While the token will be present after modifying the relevant template, the server will not validate it unless you appropriately configure the CSRF middleware for the project. Don't forget to add the middleware setting to make useful the added token, if you are not limiting to view-specific decorators to deploy CSRF.
 
-> **Hint:** If your site-wide mitigation is successful, your `<NetID>-xss.py` script will break, because the login form employs a CSRF token that is now validated, since CSRF defenses have been enabled.
+> **Hint:** If you choose a site-wide settings mitigation, and it is successful, your `<NetID>-xss.py` script will break, because the login form employs a CSRF token that is now validated, since CSRF defenses have been enabled.
 >
 >_If your mitigation only uses a view-specific decorator for CSRF protection, on the other hand, your script may not break, and there is no need to heed this hint_.
 >
 >With the middleware settings technique, though, you will need to go back and update your `<NetID>-xss.py` script from `Task 1b` to overcome these defenses. Since our Python script can read the token from the `login.html` page, you can supply it in previous and future Python tasks that require authentication. You will potentially need to overcome the CSRF challenge token for the login form as well any POST requests in your script. The logic within the sample code provided can be used to tackle each CSRF challenge, separately.
 >
->Adding the below `csrf_token` value to your programmatic logins will overcome the authentication issues that you have created by properly deploying CSRF defenses. Simply add a POST parameter named `csrfmiddlewaretoken` with the value of `csrf_token` as part of any scripted login steps throughout your Python-related tasks in this lab.
+>Adding the below `csrf_token` value to your programmatic logins and other form submissions will overcome the authentication issues that you have created by properly deploying CSRF defenses. Simply add a POST parameter named `csrfmiddlewaretoken` with the value of `csrf_token` as part of any scripted login steps throughout your Python-related tasks in this lab.
 ```python
 import re, requests
 get_token = s.get("http://127.0.0.1/login.html")
