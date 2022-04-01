@@ -1,4 +1,5 @@
 import json
+import re
 from binascii import hexlify
 from hashlib import sha256
 from django.conf import settings
@@ -6,6 +7,10 @@ from os import urandom, system
 
 SEED = settings.RANDOM_SEED
 CARD_PARSER = 'giftcardreader'
+
+#JM - sanitize text against CMDi
+def sanitize(input_string):
+    return re.sub(r'[\W_]+', '', input_string)
 
 # KG: Something seems fishy here. Why are we seeding here?
 def generate_salt(length, debug=True):
@@ -40,7 +45,9 @@ def write_card_data(card_file_path, product, price, customer):
     with open(card_file_path, 'w') as card_file:
         card_file.write(json.dumps(data_dict))
 
-def parse_card_data(card_file_data, card_path_name):
+def parse_card_data(card_file_data, card_path_unsafe):
+    #JM - sanitize user input
+    card_path_name = sanitize(card_path_unsafe)
     try:
         test_json = json.loads(card_file_data)
         if type(card_file_data) != str:
